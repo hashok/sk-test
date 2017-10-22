@@ -1,7 +1,72 @@
-	It took me way more than 2 hours to complete this task due to boilerplate
+Preface
+========
+
+	It took me waaaay more than 2 hours to complete this task due to boilerplate
 code necessary to "bootstrap" the whole thing. In my practice I try to write
 reasonable C++ wrappers around plain C code to minimize human mistakes related
 to memory handling or ownership control.
+	In my opinion, 2 hours for such task is unreasonably small amount of time
+to "aim for perfection" at least taking "perfection" as I personally understand
+it based on my SW development practice.
 
-sudo apt-get install libcurl4-openssl-dev
+Building
+========
+	Project was developed on Ubuntu 14.04 with Gnu autotools.
+	Prior to invoking autotools make sure you have curl dev library installed:
 
+		$ sudo apt-get install libcurl4-openssl-dev
+
+	Then invoke autotools as usual:
+
+		$ autoreconf -f
+		$ ./configure
+		$ make
+
+	Note: No need to run install target
+
+Running
+=======
+
+	Run directly from package root dir after make:
+
+	$ ./sktest -d www.google.com -n 10 -H "Test: value1" -H "Test: value2"
+
+Testing
+=======
+	Had no time to automate tests. I manually tried to give wrong values to
+arguments while running the program under valgrind tool. Additionally I used
+Wireshark to make sure custom headers are properly added to the HTTP request.
+	If I had more time I would create unit tests for HttpHeader class and
+also for median calculation at least.
+
+Design considerations
+=====================
+	Library public API consists of the following classes:
+
+	HttpConnectivityTest - a single test which can be run separately.
+
+	ConnectivitytestRunner - controls execution of multiple tests with statistics
+		calculation functionality. Option for how many parallel tests to run
+		should go to this class.
+
+	HttpHeader - a simple wrapper for HTTP header.
+
+	From the very beginning I had an idea to allow tests to run in parallel, for
+example 10 tests in total, 3 in parallel which would give more close to real
+world network usage pattern. I would also change the code to open as many Curl
+handles as there are parallel tests to save resources.
+	Current median calculation mechanism is also sub-optimal because it uses
+full sorting O(N*log(N) complexity while proper median algorithms are of linear
+complexity.
+
+Future improvements
+===================
+	Handle HTTP redirects, as with www.google.com example it usually redirects to
+a country-local domain (like www.google.com -> www.google.lv in Latvia). It would
+give more close to real life usage patterns.
+	Add separate IPv4/IPv6 tests. This is a very interesting statistics to see
+how IPv4/IPv6 connectivity quality differs for the same resources.
+	HTTPS support (HttpConnectivityTest is partially ready, but not tested).
+	Disable Curl features which may affect the statistics, like DNS caching.
+	Make requests parallel as already said and use Curl async API to avoid
+spawning too many threads.
