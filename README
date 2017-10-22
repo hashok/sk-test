@@ -18,7 +18,7 @@ Building
 
 	Then invoke autotools as usual:
 
-		$ autoreconf -f
+		$ autoreconf -f -i
 		$ ./configure
 		$ make
 
