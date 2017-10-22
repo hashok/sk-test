@@ -10,7 +10,8 @@ libsktest_la_CPPFLAGS = $(LIBCURL_CFLAGS) $(GLIBMM_CFLAGS) -Wall -Werror -Wpedan
 libsktest_la_SOURCES = \
 	lib/src/sk/connectivity_test.cpp \
 	lib/src/sk/connectivity_test_impl.cpp \
-	lib/src/sk/http_header.cpp
+	lib/src/sk/http_header.cpp \
+	lib/src/sk/connectivity_test_runner.cpp
 
 sktest_LDADD = libsktest.la $(LIBCURL_LIBS) $(GLIBMM_LIBS)
 	

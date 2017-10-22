@@ -28,12 +28,28 @@ public:
      * Fields are as per test requirements.
      */
     struct Result {
+        struct NameLookup {};
+        struct Connect {};
+        struct StartTransfer {};
+        struct Total {};
+
         std::string ip_address;
         long resp_code = 0;
+
         double name_lookup_time = 0;
         double connect_time = 0;
         double start_transfer_time = 0;
         double total_time = 0;
+
+        double GetScalar(NameLookup) const { return name_lookup_time; }
+        double GetScalar(Connect) const { return connect_time; }
+        double GetScalar(StartTransfer) const { return start_transfer_time; }
+        double GetScalar(Total) const { return total_time; }
+
+        void SetScalar(NameLookup, double value) { name_lookup_time = value; }
+        void SetScalar(Connect, double value) { connect_time = value; }
+        void SetScalar(StartTransfer, double value) { start_transfer_time = value; }
+        void SetScalar(Total, double value) { total_time = value; }
     };
 
     /**
