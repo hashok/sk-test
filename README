@@ -51,6 +51,10 @@ Design considerations
 
 	HttpHeader - a simple wrapper for HTTP header.
 
+	Library usage is demonstrated in the "application" app/main.cpp
+
+	Only headers files under lib/include/public are to be installed (Makefile TODO).
+
 	From the very beginning I had an idea to allow tests to run in parallel, for
 example 10 tests in total, 3 in parallel which would give more close to real
 world network usage pattern. I would also change the code to open as many Curl
