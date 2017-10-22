@@ -30,40 +30,40 @@ private:
         HttpConnectivityTest::Result result;
     };
 
-    template<typename What>
+    template<typename Meas>
     static bool
     Compare(const Test& t1, const Test& t2)
     {
-        return t1.result.GetScalar(What()) < t2.result.GetScalar(What());
+        return t1.result.GetScalar(Meas()) < t2.result.GetScalar(Meas());
     }
 
     /**
-     * Calculate median for a given measurement type What.
+     * Calculate median for a given measurement type Meas.
      */
-    template<typename What>
+    template<typename Meas>
     void
     CalculateMedian()
     {
-        std::sort(tests.begin(), tests.end(), Compare<What>);
+        std::sort(tests.begin(), tests.end(), Compare<Meas>);
 
-        result.SetScalar(What(), GetMedian<What>());
+        result.SetScalar(Meas(), GetMedian<Meas>());
     }
 
     /**
      * Get median value from a sorted vector.
      */
-    template<typename What>
+    template<typename Meas>
     double
     GetMedian()
     {
         if (tests.size() % 2) {
             // Odd, just take middle element directly
-            return tests[tests.size() / 2].result.GetScalar(What());
+            return tests[tests.size() / 2].result.GetScalar(Meas());
         }
 
         // Even, get average from two middle elements
-        auto v1 = tests[tests.size() / 2].result.GetScalar(What());
-        auto v2 = tests[tests.size() / 2 - 1].result.GetScalar(What());
+        auto v1 = tests[tests.size() / 2].result.GetScalar(Meas());
+        auto v2 = tests[tests.size() / 2 - 1].result.GetScalar(Meas());
 
         return (v1 + v2) / 2;
     }
