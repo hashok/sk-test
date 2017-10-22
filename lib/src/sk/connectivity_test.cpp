@@ -8,14 +8,16 @@
 using namespace sk;
 
 HttpConnectivityTest::UniquePtr
-HttpConnectivityTest::Create(const std::string& address, bool secure)
+HttpConnectivityTest::Create(
+    const std::string& address,
+    const HttpHeader::Collection& headers,
+    bool secure)
 {
-	return HttpConnectivityTestImpl::Create(address, secure);
+    return HttpConnectivityTestImpl::Create(address, headers, secure);
 }
-
 
 HttpConnectivityTest::Result
 HttpConnectivityTest::Run()
 {
-	return HttpConnectivityTest::Result();
+    return HttpConnectivityTest::Result();
 }

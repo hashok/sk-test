@@ -11,63 +11,64 @@ CurlGlobal::WeakPtr CurlGlobal::session;
 
 CurlGlobal::CurlGlobal()
 {
-	auto code = curl_global_init(CURL_GLOBAL_ALL);
-	if (code != CURLcode::CURLE_OK) {
-		throw std::runtime_error(std::string("CURL global init failed: ") +
-				curl_easy_strerror(code));
-	}
+    auto code = curl_global_init(CURL_GLOBAL_ALL);
+    if (code != CURLcode::CURLE_OK) {
+        throw std::runtime_error(
+            std::string("CURL global init failed: ")
+                + curl_easy_strerror(code));
+    }
 }
 
 CurlGlobal::~CurlGlobal()
 {
-	curl_global_cleanup();
+    curl_global_cleanup();
 }
 
 CurlGlobal::Ptr
 CurlGlobal::Create()
 {
-	std::unique_lock<std::mutex> lock(mutex);
+    std::unique_lock<std::mutex> lock(mutex);
 
-	auto locked = session.lock();
+    auto locked = session.lock();
 
-	if (locked) {
-		// Init already done, just increase the reference
-		return locked;
-	}
+    if (locked) {
+        // Init already done, just increase the reference
+        return locked;
+    }
 
-	locked = std::make_shared<CurlGlobal>();
+    locked = std::make_shared<CurlGlobal>();
 
-	session = locked;
+    session = locked;
 
-	return locked;
+    return locked;
 }
 
 HttpConnectivityTestImpl::~HttpConnectivityTestImpl()
 {
-	if (curl_h) {
-		curl_easy_cleanup(curl_h);
-	}
+    if (curl_h) {
+        curl_easy_cleanup(curl_h);
+    }
 }
 
 HttpConnectivityTest::Result
 HttpConnectivityTestImpl::Run()
 {
-	AcquireCurl();
+    AcquireCurl();
 
-	std::string url = secure ? "https://" : "http://";
-	url += address;
+    std::string url = secure ? "https://" : "http://";
+    url += address;
 
-	CurlSetOpt(CURLoption::CURLOPT_URL, url.c_str());
+    CurlSetOpt(CURLoption::CURLOPT_URL, url.c_str());
 
-	return Result();
+    return Result();
 }
 
 void
 HttpConnectivityTestImpl::AcquireCurl()
 {
-	curl_global = CurlGlobal::Create();
-	curl_h = curl_easy_init();
-	if (!curl_h) {
-		throw std::runtime_error("Curl easy init failed");
-	}
+    curl_global = CurlGlobal::Create();
+    curl_h = curl_easy_init();
+    if (!curl_h) {
+        throw std::runtime_error("Curl easy init failed");
+    }
 }

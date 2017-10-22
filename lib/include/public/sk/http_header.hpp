@@ -4,22 +4,25 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace sk {
 
 /**
- * User for storing and basic validation of HTTP headers.
+ * Used for storing and basic validation of HTTP headers.
  */
 class HttpHeader {
 public:
-	HttpHeader(const std::string& header);
+    using Collection = std::vector<HttpHeader>;
 
-	const std::string& Get() const { return header; }
+    HttpHeader(const std::string& header);
+
+    const std::string&
+    Get() const { return header; }
 
 private:
 
-	const std::string header;
-
+    const std::string header;
 };
 
 } // end of sk namespace

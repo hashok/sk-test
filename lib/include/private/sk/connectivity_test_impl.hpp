@@ -18,70 +18,75 @@ namespace sk {
  */
 class CurlGlobal {
 public:
-	using Ptr = std::shared_ptr<CurlGlobal>;
-	using WeakPtr = std::weak_ptr<CurlGlobal>;
+    using Ptr = std::shared_ptr<CurlGlobal>;
+    using WeakPtr = std::weak_ptr<CurlGlobal>;
 
-	CurlGlobal();
+    CurlGlobal();
 
-	~CurlGlobal();
+    ~CurlGlobal();
 
-	/**
-	 * Call this before any other CURL operation and keep owning it until
-	 * all your work with CURL is done.
-	 */
-	static Ptr
-	Create();
+    /**
+     * Call this before any other CURL operation and keep owning it until
+     * all your work with CURL is done.
+     */
+    static Ptr
+    Create();
 
 private:
-	/**
-	 * CURL global init/cleanup are not thread safe, so protect.
-	 */
-	static std::mutex mutex;
+    /**
+     * CURL global init/cleanup are not thread safe, so protect.
+     */
+    static std::mutex mutex;
 
-	/**
-	 * Non-owning access to the initialized CURL session.
-	 */
-	static WeakPtr session;
+    /**
+     * Non-owning access to the initialized CURL session.
+     */
+    static WeakPtr session;
 };
 
-class HttpConnectivityTestImpl : public HttpConnectivityTest {
+class HttpConnectivityTestImpl: public HttpConnectivityTest {
 public:
-	using UniquePtr = std::unique_ptr<HttpConnectivityTestImpl>;
+    using UniquePtr = std::unique_ptr<HttpConnectivityTestImpl>;
 
-	using HttpConnectivityTest::HttpConnectivityTest;
+    using HttpConnectivityTest::HttpConnectivityTest;
 
-	~HttpConnectivityTestImpl();
+    ~HttpConnectivityTestImpl();
 
+    template<typename ... Args>
+    static UniquePtr
+    Create(Args &&... args)
+    {
+        return std::make_unique<HttpConnectivityTestImpl>(
+            AllowCtor(),
+            std::forward<Args>(args)...);
+    }
 
-	template <typename... Args>
-	static UniquePtr
-	Create(Args &&... args)
-	{
-		return std::make_unique<HttpConnectivityTestImpl>(AllowCtor(), std::forward<Args>(args)...);
-	}
-
-	virtual Result Run() override;
+    virtual Result
+    Run() override;
 
 private:
 
-	/**
-	 * Does Curl global init and acquires a handle.
-	 */
-	void AcquireCurl();
+    /**
+     * Does Curl global init and acquires a handle.
+     */
+    void
+    AcquireCurl();
 
-	template<typename ...Args>
-	void CurlSetOpt(CURLoption opt, Args &&... args)
-	{
-		auto code = curl_easy_setopt(curl_h, opt, std::forward<Args>(args)...);
-		if (code != CURLcode::CURLE_OK) {
-			throw std::runtime_error("Failed to set Curl option " +
-					std::to_string(opt) + " :" + curl_easy_strerror(code));
-		}
-	}
+    template<typename ...Args>
+    void
+    CurlSetOpt(CURLoption opt, Args &&... args)
+    {
+        auto code = curl_easy_setopt(curl_h, opt, std::forward<Args>(args)...);
+        if (code != CURLcode::CURLE_OK) {
+            throw std::runtime_error(
+                "Failed to set Curl option " + std::to_string(opt) + " :"
+                    + curl_easy_strerror(code));
+        }
+    }
 
-	CurlGlobal::Ptr curl_global;
+    CurlGlobal::Ptr curl_global;
 
-	CURL* curl_h = nullptr;
+    CURL* curl_h = nullptr;
 
 };
 
