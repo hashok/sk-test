@@ -15,7 +15,7 @@ HttpHeader::HttpHeader(const std::string& header) :
         throw std::runtime_error("Bad header: cr,lf pair found");
     }
 
-    if (header.find(';') == header.npos) {
-        throw std::runtime_error("Bad header: no ; separator found");
+    if (header.find(':') == header.npos) {
+        throw std::runtime_error("Bad header: no ':' separator found");
     }
 }
