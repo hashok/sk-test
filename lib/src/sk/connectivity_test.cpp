@@ -15,9 +15,3 @@ HttpConnectivityTest::Create(
 {
     return HttpConnectivityTestImpl::Create(headers, address, secure);
 }
-
-HttpConnectivityTest::Result
-HttpConnectivityTest::Run()
-{
-    return HttpConnectivityTest::Result();
-}
