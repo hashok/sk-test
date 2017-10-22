@@ -76,6 +76,12 @@ HttpConnectivityTestImpl::~HttpConnectivityTestImpl()
     }
 }
 
+static size_t
+SilentWriteCallback(char*, size_t size, size_t nmemb, void*)
+{
+    return size + nmemb;
+}
+
 HttpConnectivityTest::Result
 HttpConnectivityTestImpl::Run()
 {
@@ -84,6 +90,8 @@ HttpConnectivityTestImpl::Run()
     std::string url(secure ? "https://" : "http://");
     url += address;
 
+    CurlSetOpt(CURLoption::CURLOPT_WRITEFUNCTION, SilentWriteCallback);
+    CurlSetOpt(CURLoption::CURLOPT_VERBOSE, 0L);
     CurlSetOpt(CURLoption::CURLOPT_HTTPGET, 1L);
     CurlSetOpt(CURLoption::CURLOPT_URL, url.c_str());
     CurlSetOpt(CURLoption::CURLOPT_HTTPHEADER, curl_headers.GetList());
@@ -94,7 +102,7 @@ HttpConnectivityTestImpl::Run()
     auto code = curl_easy_perform(curl_h);
 
     if (code != CURLcode::CURLE_OK) {
-        std::runtime_error(std::string("Curl perform failed: ") + curl_easy_strerror(code));
+        throw std::runtime_error(std::string("Curl perform failed: ") + curl_easy_strerror(code));
     }
 
     Result result;
