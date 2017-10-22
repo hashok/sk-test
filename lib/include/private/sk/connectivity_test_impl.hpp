@@ -107,6 +107,18 @@ private:
         }
     }
 
+    template<typename ...Args>
+    void
+    CurlGetInfo(CURLINFO info, Args &&... args)
+    {
+        auto code = curl_easy_getinfo(curl_h, info, std::forward<Args>(args)...);
+        if (code != CURLcode::CURLE_OK) {
+            throw std::runtime_error(
+                "Failed to get Curl info " + std::to_string(info) + " :"
+                + curl_easy_strerror(code));
+        }
+    }
+
     CurlGlobal::Ptr curl_global;
 
     CURL* curl_h = nullptr;

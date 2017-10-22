@@ -24,8 +24,11 @@ protected:
 public:
     using UniquePtr = std::unique_ptr<HttpConnectivityTest>;
 
+    /**
+     * Fields are as per test requirements.
+     */
     struct Result {
-
+        std::string ip_address;
     };
 
     /**

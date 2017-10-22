@@ -87,6 +87,9 @@ HttpConnectivityTestImpl::Run()
     CurlSetOpt(CURLoption::CURLOPT_HTTPGET, 1L);
     CurlSetOpt(CURLoption::CURLOPT_URL, url.c_str());
     CurlSetOpt(CURLoption::CURLOPT_HTTPHEADER, curl_headers.GetList());
+    /* Avoid ambiguity, use only IPv4 for now.
+     * We definitely want to have IPv4/6 statistics separated in future. */
+    CurlSetOpt(CURLoption::CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
     auto code = curl_easy_perform(curl_h);
 
@@ -94,7 +97,16 @@ HttpConnectivityTestImpl::Run()
         std::runtime_error(std::string("Curl perform failed: ") + curl_easy_strerror(code));
     }
 
-    return Result();
+    Result result;
+
+    {
+        char* ip = nullptr;
+        CurlGetInfo(CURLINFO::CURLINFO_PRIMARY_IP, &ip);
+        // Copy is made implicitly
+        result.ip_address = ip;
+    }
+
+    return result;
 }
 
 void
