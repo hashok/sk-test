@@ -3,7 +3,7 @@
  */
 #include "sk/connectivity_test_impl.hpp"
 
-namespace sk {
+using namespace sk;
 
 std::mutex CurlGlobal::mutex;
 
@@ -71,6 +71,3 @@ HttpConnectivityTestImpl::AcquireCurl()
 		throw std::runtime_error("Curl easy init failed");
 	}
 }
-
-
-} // end of sk namespace

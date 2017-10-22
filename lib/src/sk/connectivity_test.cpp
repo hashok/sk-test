@@ -5,7 +5,7 @@
 #include "sk/common.hpp"
 #include <curl/curl.h>
 
-namespace sk {
+using namespace sk;
 
 HttpConnectivityTest::UniquePtr
 HttpConnectivityTest::Create(const std::string& address, bool secure)
@@ -19,5 +19,3 @@ HttpConnectivityTest::Run()
 {
 	return HttpConnectivityTest::Result();
 }
-
-} // end of sk namespace
