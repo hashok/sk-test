@@ -9,7 +9,7 @@ AC_INIT([sk-test], [0.1], [www.samknows.com])
 
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([subdir-objects -Wno-portability])
-LT_INIT([disable-static])
+LT_INIT([disable-shared])
 AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
 #AC_CONFIG_SRCDIR([src/ws_service.cpp])
