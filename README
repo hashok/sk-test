@@ -1,2 +1,7 @@
+	It took me way more than 2 hours to complete this task due to boilerplate
+code necessary to "bootstrap" the whole thing. In my practice I try to write
+reasonable C++ wrappers around plain C code to minimize human mistakes related
+to memory handling or ownership control.
+
 sudo apt-get install libcurl4-openssl-dev
-sudo apt-get install libglibmm-2.4-dev
+
