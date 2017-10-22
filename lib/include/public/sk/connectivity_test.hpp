@@ -29,6 +29,11 @@ public:
      */
     struct Result {
         std::string ip_address;
+        long resp_code = 0;
+        double name_lookup_time = 0;
+        double connect_time = 0;
+        double start_transfer_time = 0;
+        double total_time = 0;
     };
 
     /**

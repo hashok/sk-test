@@ -106,6 +106,12 @@ HttpConnectivityTestImpl::Run()
         result.ip_address = ip;
     }
 
+    CurlGetInfo(CURLINFO::CURLINFO_RESPONSE_CODE, &result.resp_code);
+    CurlGetInfo(CURLINFO::CURLINFO_NAMELOOKUP_TIME, &result.name_lookup_time);
+    CurlGetInfo(CURLINFO::CURLINFO_CONNECT_TIME, &result.connect_time);
+    CurlGetInfo(CURLINFO::CURLINFO_STARTTRANSFER_TIME, &result.start_transfer_time);
+    CurlGetInfo(CURLINFO::CURLINFO_TOTAL_TIME, &result.total_time);
+
     return result;
 }
 
