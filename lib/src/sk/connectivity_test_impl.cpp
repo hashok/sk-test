@@ -79,7 +79,7 @@ HttpConnectivityTestImpl::~HttpConnectivityTestImpl()
 static size_t
 SilentWriteCallback(char*, size_t size, size_t nmemb, void*)
 {
-    return size + nmemb;
+    return size * nmemb;
 }
 
 HttpConnectivityTest::Result
