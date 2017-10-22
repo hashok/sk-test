@@ -13,7 +13,7 @@ HttpConnectivityTest::Create(
     const HttpHeader::Collection& headers,
     bool secure)
 {
-    return HttpConnectivityTestImpl::Create(address, headers, secure);
+    return HttpConnectivityTestImpl::Create(headers, address, secure);
 }
 
 HttpConnectivityTest::Result

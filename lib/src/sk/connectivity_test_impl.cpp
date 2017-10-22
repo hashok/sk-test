@@ -43,6 +43,32 @@ CurlGlobal::Create()
     return locked;
 }
 
+CurlHeaders::CurlHeaders(const HttpHeader::Collection& headers)
+{
+    for (const auto& it : headers) {
+        auto new_list = curl_slist_append(list, it.Get().c_str());
+        if (!new_list) {
+            // Cleanup already created list
+            Cleanup();
+            throw std::runtime_error("Curl slist append failed");
+        }
+        list = new_list;
+    }
+}
+
+CurlHeaders::~CurlHeaders()
+{
+    Cleanup();
+}
+
+void
+CurlHeaders::Cleanup()
+{
+    if (list) {
+        curl_slist_free_all(list);
+    }
+}
+
 HttpConnectivityTestImpl::~HttpConnectivityTestImpl()
 {
     if (curl_h) {
@@ -55,10 +81,18 @@ HttpConnectivityTestImpl::Run()
 {
     AcquireCurl();
 
-    std::string url = secure ? "https://" : "http://";
+    std::string url(secure ? "https://" : "http://");
     url += address;
 
+    CurlSetOpt(CURLoption::CURLOPT_HTTPGET, 1L);
     CurlSetOpt(CURLoption::CURLOPT_URL, url.c_str());
+    CurlSetOpt(CURLoption::CURLOPT_HTTPHEADER, curl_headers.GetList());
+
+    auto code = curl_easy_perform(curl_h);
+
+    if (code != CURLcode::CURLE_OK) {
+        std::runtime_error(std::string("Curl perform failed: ") + curl_easy_strerror(code));
+    }
 
     return Result();
 }

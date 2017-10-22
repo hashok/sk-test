@@ -44,11 +44,36 @@ private:
     static WeakPtr session;
 };
 
+/**
+ * Class to adapt HttpHeader::Collection to curl_slist.
+ */
+
+class CurlHeaders {
+public:
+    CurlHeaders(const HttpHeader::Collection& headers);
+
+    ~CurlHeaders();
+
+    curl_slist*
+    GetList() { return list; };
+
+private:
+    void Cleanup();
+
+    curl_slist* list = nullptr;
+};
+
 class HttpConnectivityTestImpl: public HttpConnectivityTest {
 public:
     using UniquePtr = std::unique_ptr<HttpConnectivityTestImpl>;
 
-    using HttpConnectivityTest::HttpConnectivityTest;
+    template<typename ... Args>
+    HttpConnectivityTestImpl(const HttpHeader::Collection& headers, Args &&... args) :
+        HttpConnectivityTest(AllowCtor(), std::forward<Args>(args)...),
+        curl_headers(headers)
+    {
+
+    }
 
     ~HttpConnectivityTestImpl();
 
@@ -56,9 +81,7 @@ public:
     static UniquePtr
     Create(Args &&... args)
     {
-        return std::make_unique<HttpConnectivityTestImpl>(
-            AllowCtor(),
-            std::forward<Args>(args)...);
+        return std::make_unique<HttpConnectivityTestImpl>(std::forward<Args>(args)...);
     }
 
     virtual Result
@@ -87,6 +110,8 @@ private:
     CurlGlobal::Ptr curl_global;
 
     CURL* curl_h = nullptr;
+
+    CurlHeaders curl_headers;
 
 };
 

@@ -34,9 +34,8 @@ public:
     HttpConnectivityTest(
         const AllowCtor&,
         const std::string& address,
-        const HttpHeader::Collection& headers,
         bool secure) :
-        address(address), headers(headers), secure(secure) {};
+        address(address), secure(secure) {};
 
     virtual
     ~HttpConnectivityTest() = default;
@@ -68,11 +67,6 @@ protected:
      * URL without a protocol part.
      */
     const std::string address;
-
-    /**
-     * List of headers to add to the request.
-     */
-    const HttpHeader::Collection headers;
 
     /**
      * HTTP or HTTPS.
